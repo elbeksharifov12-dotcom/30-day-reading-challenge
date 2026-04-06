@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Kunlik Kitobxonlik Challenge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --grad: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--grad);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 25px;
+            border: 1px solid var(--glass);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        h2 { text-align: center; font-size: 24px; margin-bottom: 25px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+
+        .input-group {
+            display: flex;
+            background: var(--glass);
+            padding: 5px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 15px;
+            color: white;
+            outline: none;
+            font-size: 16px;
+        }
+
+        input::placeholder { color: rgba(255,255,255,0.7); }
+
+        .add-btn {
+            background: #00d2ff;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover { transform: scale(1.05); background: #00c2ee; }
+
+        .user-card {
+            background: white;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #333;
+            transition: 0.4s;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-info { display: flex; align-items: center; gap: 12px; }
+
+        .rank-circle {
+            width: 35px; height: 35px;
+            background: #f1f2f6;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: #6a11cb;
+        }
+
+        .name-box b { font-size: 17px; display: block; }
+        .score-text { font-size: 12px; color: #777; }
+
+        .actions { display: flex; align-items: center; gap: 10px; }
+
+        .read-btn {
+            background: var(--grad);
+            color: white;
+            border: none;
+            width: 45px; height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .read-btn:active { transform: scale(0.9); }
+
+        .crown { color: #f1c40f; font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h2><i class="fas fa-book-reader"></i> Kitobxonlar 👑</h2>
+    
+    <div class="input-group">
+        <input type="text" id="userName" placeholder="Ism kiriting...">
+        <button class="add-btn" onclick="addUser()">Qo'shish</button>
+    </div>
+
+    <div id="leaderboard"></div>
+</div>
+
+<script>
+    let users = JSON.parse(localStorage.getItem('bookChallenge')) || [];
+
+    function render() {
+        users.sort((a, b) => b.score - a.score);
+        localStorage.setItem('bookChallenge', JSON.stringify(users));
+        
+        const board = document.getElementById('leaderboard');
+        board.innerHTML = '';
+
+        users.forEach((user, i) => {
+            const isWinner = i === 0 && user.score > 0;
+            board.innerHTML += `
+                <div class="user-card" style="${isWinner ? 'border: 2px solid #f1c40f' : ''}">
+                    <div class="user-info">
+                        <div class="rank-circle">${i + 1}</div>
+                        <div class="name-box">
+                            <b>${user.name} ${isWinner ? '<i class="fas fa-crown crown"></i>' : ''}</b>
+                            <span class="score-text">${user.score} kun o'qildi</span>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="read-btn" onclick="addPoint(${i})">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function addUser() {
+        const input = document.getElementById('userName');
+        if(input.value.trim()) {
+            users.push({ name: input.value, score: 0 });
+            input.value = '';
+            render();
+        }
+    }
+
+    function addPoint(index) {
+        users[index].score++;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+      </html>
