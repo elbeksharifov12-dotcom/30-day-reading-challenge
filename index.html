@@ -3,208 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Library v3.0</title>
+    <title>Elite Reading Challenge PRO</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg: #050505;
-            --card-bg: rgba(20, 20, 25, 0.8);
-            --neon: #00f2fe;
-            --accent: #7000ff;
-            --text: #ffffff;
+            --primary: #00f2fe;
+            --secondary: #7000ff;
+            --dark-bg: #08080c;
+            --glass: rgba(255, 255, 255, 0.05);
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            background-image: radial-gradient(circle at 10% 20%, rgba(112, 0, 255, 0.15) 0%, transparent 40%),
-                              radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.15) 0%, transparent 40%);
-            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            background: var(--dark-bg);
+            background-image: fixed;
+            background-image: radial-gradient(circle at top right, rgba(112, 0, 255, 0.2), transparent),
+                              radial-gradient(circle at bottom left, rgba(0, 242, 254, 0.2), transparent);
+            color: white;
             margin: 0;
-            padding-bottom: 80px;
-            min-height: 100vh;
+            padding-bottom: 90px;
+            overflow-x: hidden;
         }
 
-        /* Navbar */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 1000;
-        }
-
-        .nav-item {
-            color: rgba(255,255,255,0.5);
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .nav-item.active { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
-
-        /* Sections */
-        .section { display: none; padding: 25px; animation: fadeIn 0.5s ease; }
+        /* --- UI Elements --- */
+        .section { display: none; padding: 30px 20px; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
         .section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Premium Cards */
         .glass-card {
-            background: var(--card-bg);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
             border-radius: 30px;
             padding: 25px;
             border: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            margin-bottom: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        h1 { font-size: 28px; background: linear-gradient(to right, #00f2fe, #7000ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; background: linear-gradient(to right, #00f2fe, #7000ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Leaderboard Style */
-        .rank-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 20px;
-            margin-bottom: 12px;
-            transition: 0.3s;
-        }
-
-        .rank-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
-
-        .rank-num { font-size: 22px; font-weight: 800; width: 40px; color: var(--neon); }
-
-        .user-avatar {
-            width: 45px; height: 45px;
-            background: linear-gradient(45deg, var(--accent), var(--neon));
-            border-radius: 15px;
-            margin-right: 15px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .score-pill {
-            background: rgba(0, 242, 254, 0.15);
-            padding: 5px 12px;
-            border-radius: 12px;
-            color: var(--neon);
-            font-weight: bold;
-        }
-
-        /* Buttons */
-        .glow-btn {
-            background: linear-gradient(45deg, var(--accent), var(--neon));
-            border: none; color: white;
-            padding: 15px 30px;
-            border-radius: 20px;
-            width: 100%;
-            font-size: 18px; font-weight: bold;
-            box-shadow: 0 10px 20px rgba(112, 0, 255, 0.3);
-            cursor: pointer;
-        }
-
+        /* --- Inputs & Buttons --- */
+        .input-group { margin-bottom: 20px; }
         input {
-            width: 90%; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px; border-radius: 15px;
-            color: white; margin-bottom: 15px;
+            width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.07);
+            border: 2px solid rgba(255,255,255,0.1); padding: 16px 20px;
+            border-radius: 18px; color: white; font-size: 16px; transition: 0.3s;
         }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); }
+
+        .btn-main {
+            width: 100%; background: linear-gradient(45deg, var(--secondary), var(--primary));
+            border: none; color: white; padding: 18px; border-radius: 18px;
+            font-size: 18px; font-weight: 700; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 10px 25px rgba(112, 0, 255, 0.3);
+        }
+        .btn-main:active { transform: scale(0.96); }
+
+        /* --- Leaderboard Design --- */
+        .rank-card {
+            display: flex; align-items: center; padding: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 22px;
+            margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s; position: relative;
+        }
+        .rank-card.top-1 {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.05));
+            border-color: #ffd700;
+        }
+        .rank-index { width: 40px; font-size: 24px; font-weight: 900; color: rgba(255,255,255,0.2); }
+        .rank-avatar {
+            width: 50px; height: 50px; background: var(--secondary);
+            border-radius: 16px; margin-right: 15px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
+        .rank-score { background: rgba(0, 242, 254, 0.1); color: var(--primary); padding: 8px 15px; border-radius: 12px; font-weight: 800; }
+
+        /* --- Navigation --- */
+        .nav-bar {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: 85%; max-width: 400px; background: rgba(15, 15, 20, 0.8);
+            backdrop-filter: blur(25px); display: flex; justify-content: space-around;
+            padding: 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); z-index: 1000;
+        }
+        .nav-link { color: rgba(255,255,255,0.4); font-size: 22px; cursor: pointer; transition: 0.3s; }
+        .nav-link.active { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+
+        .book-img { width: 100%; height: 180px; object-fit: cover; border-radius: 20px; margin: 15px 0; }
     </style>
 </head>
 <body>
 
     <div id="home" class="section active">
-        <h1>Xush kelibsiz! ✨</h1>
+        <h1>Boshqaruv ✨</h1>
         <div class="glass-card">
-            <p style="color: #aaa;">Bugun qancha kitob o'qidingiz?</p>
-            <input type="text" id="userName" placeholder="Ismingizni kiriting...">
-            <button class="glow-btn" onclick="addActivity()">📖 O'qidim deb belgilash</button>
+            <h3>Yangi Kitobxon qo'shish</h3>
+            <div class="input-group">
+                <input type="text" id="regName" placeholder="Ismingizni yozing...">
+            </div>
+            <button class="btn-main" onclick="registerUser()">Ro'yxatdan o'tish 🚀</button>
         </div>
-        
-        <div class="glass-card" style="display: flex; justify-content: space-between;">
-            <div><small>Jami kitobxonlar</small><h3 id="statUsers">0</h3></div>
-            <div><small>O'qilgan kunlar</small><h3 id="statDays">0</h3></div>
+
+        <div class="glass-card">
+            <h3>Bugungi natija</h3>
+            <p style="color: #888;">Ismingizni tanlang va ball qo'shing:</p>
+            <select id="userSelect" style="width:100%; padding:15px; border-radius:12px; background:rgba(255,255,255,0.1); color:white; border:none; margin-bottom:15px;"></select>
+            <button class="btn-main" style="background:var(--primary); color:black;" onclick="addPoint()">O'qidim! ✅</button>
         </div>
     </div>
 
-    <div id="ranking" class="section">
-        <h1>Top Kitobxonlar 🏆</h1>
-        <div id="leaderboardList"></div>
+    <div id="leaderboard" class="section">
+        <h1>Reyting 🏆</h1>
+        <div id="rankList"></div>
     </div>
 
     <div id="library" class="section">
         <h1>Kutubxona 📚</h1>
         <div class="glass-card">
-            <h3>Hafta kitobi</h3>
-            <p style="color: #aaa;">"Atom odatlar" - James Clear</p>
-            <div style="height: 150px; background: url('https://m.media-amazon.com/images/I/51-nXsSRfZL.jpg') center/cover; border-radius: 15px;"></div>
+            <span style="color: var(--primary); font-weight: bold;">TAVSIYA</span>
+            <h2>Samaradorlikning 21 yoʼli</h2>
+            <p style="color: #bbb;">Brian Tracy tomonidan yozilgan ushbu kitob vaqtni boshqarish va eng muhim ishlarni birinchi navbatda bajarish bo'yicha dunyodagi eng mashhur qo'llanmadir.</p>
+            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80" class="book-img">
+            <button class="btn-main" onclick="window.open('https://kitobxon.com', '_blank')">Kitobni o'qish</button>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="showSec('home', this)"><i class="fas fa-home"></i></div>
-        <div class="nav-item" onclick="showSec('ranking', this)"><i class="fas fa-trophy"></i></div>
-        <div class="nav-item" onclick="showSec('library', this)"><i class="fas fa-book"></i></div>
-    </nav>
+    <div class="nav-bar">
+        <div class="nav-link active" onclick="nav('home', this)"><i class="fas fa-th-large"></i></div>
+        <div class="nav-link" onclick="nav('leaderboard', this)"><i class="fas fa-crown"></i></div>
+        <div class="nav-link" onclick="nav('library', this)"><i class="fas fa-book-open"></i></div>
+    </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('eliteLib')) || [];
+        let users = JSON.parse(localStorage.getItem('megaLib')) || [];
 
-        function showSec(id, el) {
+        function nav(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
-            if(id === 'ranking') renderLeaderboard();
+            if(id === 'leaderboard') showRankings();
+            updateSelect();
         }
 
-        function addActivity() {
-            const name = document.getElementById('userName').value.trim();
-            if(!name) return alert("Ismingizni yozing!");
+        function registerUser() {
+            const name = document.getElementById('regName').value.trim();
+            if(!name) return alert("Ism kiriting!");
+            if(users.find(u => u.name === name)) return alert("Bu ism allaqachon bor!");
             
-            let user = db.find(u => u.name === name);
-            if(user) user.score++;
-            else db.push({name, score: 1});
-
-            localStorage.setItem('eliteLib', JSON.stringify(db));
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            updateStats();
-            alert("Ball qo'shildi! Reytingni tekshiring.");
+            users.push({name, score: 0});
+            save();
+            document.getElementById('regName').value = '';
+            alert("Siz ro'yxatdan o'tdingiz! Endi ball qo'shishingiz mumkin.");
+            updateSelect();
         }
 
-        function updateStats() {
-            document.getElementById('statUsers').innerText = db.length;
-            document.getElementById('statDays').innerText = db.reduce((a,b) => a + b.score, 0);
+        function addPoint() {
+            const name = document.getElementById('userSelect').value;
+            if(!name) return alert("Avval ro'yxatdan o'ting!");
+            
+            const user = users.find(u => u.name === name);
+            user.score++;
+            save();
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.7 }, colors: ['#00f2fe', '#7000ff'] });
         }
 
-        function renderLeaderboard() {
-            const list = document.getElementById('leaderboardList');
+        function updateSelect() {
+            const sel = document.getElementById('userSelect');
+            sel.innerHTML = users.map(u => `<option value="${u.name}">${u.name}</option>`).join('');
+        }
+
+        function showRankings() {
+            const list = document.getElementById('rankList');
             list.innerHTML = '';
-            db.sort((a,b) => b.score - a.score);
-            db.forEach((u, i) => {
+            users.sort((a,b) => b.score - a.score);
+            
+            users.forEach((u, i) => {
+                const isFirst = i === 0 && u.score > 0;
                 list.innerHTML += `
-                    <div class="rank-item">
-                        <div class="rank-num">#${i+1}</div>
-                        <div class="user-avatar">${u.name[0].toUpperCase()}</div>
-                        <div style="flex:1"><b>${u.name}</b></div>
-                        <div class="score-pill">${u.score} ball</div>
+                    <div class="rank-card ${isFirst ? 'top-1' : ''}">
+                        <div class="rank-index">#${i+1}</div>
+                        <div class="rank-avatar">${u.name[0].toUpperCase()}</div>
+                        <div style="flex:1">
+                            <div style="font-weight:bold; font-size:18px;">${u.name} ${isFirst ? '👑' : ''}</div>
+                            <div style="font-size:12px; color:#777;">Kitobxon darajasi</div>
+                        </div>
+                        <div class="rank-score">${u.score} ball</div>
                     </div>
                 `;
             });
         }
 
-        updateStats();
+        function save() { localStorage.setItem('megaLib', JSON.stringify(users)); }
+        updateSelect();
     </script>
 </body>
     </html>
